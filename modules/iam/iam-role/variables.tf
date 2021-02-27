@@ -10,6 +10,12 @@ variable "ENV_TYPE" {
   default     = "dev"
 }
 
+variable "ENV_NAME" {
+  description = "Environment name"
+  type        = string
+  default     = "dev"
+}
+
 variable "RESOURCE_NAME" {
   description = "AWS IAM role account name"
   type        = string

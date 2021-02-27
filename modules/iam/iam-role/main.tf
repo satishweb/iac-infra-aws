@@ -1,8 +1,3 @@
-# terraform {
-#   backend "s3" {
-#   }
-# }
-
 provider "aws" {
   region = var.AWS_REGION
 }
@@ -21,8 +16,8 @@ module "iam_assumable_role" {
   ]
 
   create_role = true
-  role_name         = "${var.ENV_TYPE}_${var.RESOURCE_NAME}_role"
-  role_description  = "IAM Role for ${var.ENV_TYPE}_${var.RESOURCE_NAME}"
+  role_name         = "${var.ENV_TYPE}_${var.ENV_NAME}_${var.RESOURCE_NAME}_role"
+  role_description  = "IAM Role for ${var.ENV_TYPE}_${var.ENV_NAME}_${var.RESOURCE_NAME}"
   role_requires_mfa = false
   max_session_duration = var.IAM_MAX_SESSION_DURATION
 
@@ -32,6 +27,8 @@ module "iam_assumable_role" {
   number_of_custom_role_policy_arns = 1
   tags = {
     TF = "true"
+    ENV_NAME = var.ENV_NAME
+    ENV_TYPE = var.ENV_TYPE
     SA = "${var.ENV_TYPE}-${var.RESOURCE_NAME}-service-account"
   }
 }
@@ -41,9 +38,9 @@ module "iam_policy" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-policy"
   version = "~> 3.0"
 
-  name        = "${var.ENV_TYPE}_${var.RESOURCE_NAME}_policy"
+  name        = "${var.ENV_TYPE}_${var.ENV_NAME}_${var.RESOURCE_NAME}_policy"
   path        = "/"
-  description = "IAM Policy for ${var.ENV_TYPE}_${var.RESOURCE_NAME}"
+  description = "IAM Policy for ${var.ENV_TYPE}_${var.ENV_NAME}_${var.RESOURCE_NAME}"
 
   policy = data.aws_iam_policy_document.iam_policy_document.json
 }
